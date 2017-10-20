@@ -1,0 +1,37 @@
+Downloaded 2.57-1 from limesurvey.org 
+took 7z file
+Copied upload directory from prod server
+Added AuthPortal plugin to plugin directory
+Added modified login page to application\views\admin\authentication - Changed admin to logged out
+
+around line 16
+
+  <!-- <p><?php eT("Administration");?></p> -->
+							
+<p>Log Out complete.</p>
+
+
+Added to 
+
+application\views\admin\super\header.php
+before </head> 
+
+This hides login form via css.
+<!-- Hide Login Form Customization Concordia by Eric Katchan -->
+	<style type="text/css">
+	    div#login-panel form#loginform,
+		div.login-content { 
+			display: none;
+		}
+		div#pannel-1.panel.panel-primary.login-pannel {
+		  min-height: auto;
+		}
+	</style>
+
+
+comment out $this->_redirectIfLoggedIn(); (Apprx line 40)
+application\controllers\admin\authentication.php
+
+IMPORTANTPlease run the following sql to fix faulty Permissions
+
+update dbo.lime_permissions set read_p = 0, update_p = 0, delete_p = 0 WHERE id in (select id from dbo.lime_permissions where read_p = 1 and update_p = 1 and delete_p = 1 and permission = 'surveys');

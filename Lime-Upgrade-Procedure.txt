@@ -1,0 +1,61 @@
+LimeSurvey Upgrade procedure
+
+Remote desktop to survey.concordia.ca
+Navigate to apache->htdocs
+Backup Limesurvey database
+Create a backup zip file of limesurvey directory
+Copy new software to htdocs directory
+From current production folder, copy the upload directory and copy to the new software directory
+Copy htdocs->limesurvey->application->config->config.php to same directory in new software directory.
+
+Make the follwing customizations to the new software directory:
+Copy AuthPortal folder to plugin directory.
+Modify login page to application\views\admin\authentication - Changed admin to logged out
+	around line 16
+  	<!-- <p><?php eT("Administration");?></p> -->
+  	<p>Log Out complete.</p>
+
+Modify, Add to application\views\admin\super\header.php
+before 
+</head> 
+
+This hides login form via css.
+<!-- Hide Login Form Customization Concordia by Eric Katchan -->
+	<style type="text/css">
+	    div#login-panel form#loginform,
+		div.login-content { 
+			display: none;
+		}
+		div#pannel-1.panel.panel-primary.login-pannel {
+		  min-height: auto;
+		}
+	</style>
+
+
+Modify application\controllers\admin\authentication.php 
+	comment out $this->_redirectIfLoggedIn(); (Apprx line 40)
+	
+Log in to myconcordia and navigate to limesurvey application (Nicholas or Eric)
+Once logged into limesurvey open the page in a new window.
+Rename current production directory to limesurvey-old
+Rename new software directory to limesurvey
+Navigat ein a browser to 
+https://survey.concordia.ca/limesurvey/admin/ and allow upgrade to proceed automatically.
+
+Once complete, navigate to the plugin administration page on limesurvey.
+Enable 
+Concordia University Reverse Authentication plugin, 
+LimeSurvey Internal database
+WebServer
+
+Disable Ldap
+
+Have DBA run the following SQL:
+update dbo.lime_permissions set read_p = 0, update_p = 0, delete_p = 0 WHERE id in (select id from dbo.lime_permissions where read_p = 1 and update_p = 1 and delete_p = 1 and permission = 'surveys');
+
+Test.
+
+Debug if issues encountered
+If not possible to resolve restore old DB and rename directories to enable original code.
+
+
