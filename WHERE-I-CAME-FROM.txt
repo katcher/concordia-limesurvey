@@ -35,3 +35,5 @@ application\controllers\admin\authentication.php
 IMPORTANTPlease run the following sql to fix faulty Permissions
 
 update dbo.lime_permissions set read_p = 0, update_p = 0, delete_p = 0 WHERE id in (select id from dbo.lime_permissions where read_p = 1 and update_p = 1 and delete_p = 1 and permission = 'surveys');
+
+Initial Production Repository
